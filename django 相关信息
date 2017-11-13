@@ -1,0 +1,101 @@
+使用环境 python：2.7   django:1.11 (本人windows)
+部分内容转载于:http://www.jianshu.com/p/9b2ed154b616 (作者:海深不蓝)
+
+第一步：创建django工程（默认环境变量均配置成功）
+
+django-admin.py startproject projectname
+
+第二步：创建此工程的APP项目进入工程目录 与manage.py 同级
+
+django-admin.py startapp appname
+
+至于其他的 如static Template 等文件加可手动创建至此django 的工程文件创建完成
+
+进入工程目录存在以下文件：
+
+-*- appname
+
+migrations:一个数据迁移的模块，内容自动生成
+admin.py 该应用的后台管理系统
+apps.py 该应用的一些配置，Django-1.9以后自动生成
+models.py 数据模块，使用ORM框架
+tests.py 自动化测试的模块
+views.py 执行响应的代码所在模块，是代码逻辑处理的主要地点，项目中大部分代码在这里编写
+
+
+-*- manage.py
+:是与项目进行交互的命令行工具集的入口，是Django中的项目管理器，运行命令：
+
+-*- projectname
+  * init.py
+  * settings.py
+  * urls.py
+  * wsgi.py
+  
+:这个目录是项目的一个容器，包含项目的一些基本配置
+
+* wsgi （Python Web Server Gateway Interface）即Python服务器网关接口，是python应用与Web服务器之间的接口。
+
+* URL 配置文件 Django项目中所有地址（页面）都需要我们去配置URL。
+
+* settings.py
+
+BASE_DIR:项目的根目录；
+
+SECRET_KEY:安全码；
+
+DEBUG:调试，实际生产中需要将其值设置为 false ；
+
+ALLOWED_HOSTS:设置允许的外界访问的地址；
+
+INSTALLED_APPS:记录加载的应用；
+
+MIDLEWEAR:自带的工具集；
+
+ROOT_URLCONF:URL根文件的配置文件；
+
+TEMPLATES:模板文件，模板指的是一个个HTML文件；
+
+WSGI_APPLICATION:
+
+DATABASES:数据库文件，默认是sqlite3，如果要使用其他数据库可以到Django官网有关数据库配置的文档了解；
+
+AUTH_PASSWORD_VALIDATORS：与密码认证有关；
+
+LANGUAGE_CODE:语言，默认是un-es即美式英语；
+
+TIME_ZONE:时区；
+
+STATIC_URL:静态文件（CSS，JavaScript，images等）的地址。
+
+* init.py 
+ 声明模块，内容默认为空。
+ 
+-*- 项目目录下
+* models.py
+新建的类名为你数据库setting 内指定数据库的表明,类内声明的变量为表字段名
+数据库连接  django 默认数据库为sqlite3：
+# sqlite3数据库连接方式
+# DATABASES = {
+#     ‘default‘: {
+#         ‘ENGINE‘: ‘django.db.backends.sqlite3‘,
+#         ‘NAME‘: os.path.join(BASE_DIR, ‘db.sqlite3‘),
+#     }
+# }
+
+# MySQL数据库连接方式
+DATABASES = {
+    ‘default‘: {
+    ‘ENGINE‘: ‘django.db.backends.mysql‘,
+    ‘NAME‘:‘dbname‘,
+    ‘USER‘: ‘root‘,
+    ‘PASSWORD‘: ‘xxx‘,
+    ‘HOST‘: ‘‘,
+    ‘PORT‘: ‘‘,
+    }
+}
+
+
+ 
+ 
+
