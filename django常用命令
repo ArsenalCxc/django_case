@@ -1,1 +1,10 @@
+使用环境 python：2.7   django:1.11 (本人windows)
+
+第一步：创建django工程（默认环境变量均配置成功）
+
+django-admin.py startproject projectname
+
+第二步：创建此工程的APP项目进入工程目录 与manage.py 同级
+
+django-admin startapp appname
 
