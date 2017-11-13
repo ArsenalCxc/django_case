@@ -95,7 +95,16 @@ DATABASES = {
     }
 }
 
+-*- views.py
+* 接口实现和视图的实现，通过Url.py文件指定路由如下。
 
- 
- 
+from django.conf.urls import url
+from django.contrib import admin
+from management import views
+
+urlpatterns = [
+    url(r'^admin/', admin.site.urls),
+    url(r'^XdrUser/$', view.XdrUser),
+]
+
 
