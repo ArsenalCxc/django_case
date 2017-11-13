@@ -1,0 +1,2 @@
+# django_case
+django
