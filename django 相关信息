@@ -1,5 +1,5 @@
 使用环境 python：2.7   django:1.11 (本人windows)
-部分内容转载于:http://www.jianshu.com/p/9b2ed154b616 (作者:海深不蓝)
+注:部分内容转载于:http://www.jianshu.com/p/9b2ed154b616 (作者:海深不蓝)
 
 第一步：创建django工程（默认环境变量均配置成功）
 
