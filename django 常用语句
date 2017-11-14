@@ -1,0 +1,34 @@
+创建项目 django-admin.py startproject projectname
+创建应用 cd projectname  django-admin.py startapp appname
+
+数据库表创建、更新：python manage.py makemigrations
+                  python manage.py migrate
+更新字段类型或者创建表可用上面的命令
+新增表字段则:  python manage.py shell
+            * from django.db import connection
+            * cursor=connection.cursor()
+            * cursor.execute('ALTER TABLE table_name add port Integer default 0')
+
+对数据库表的增删改查：
+
+models.py文件中为User表
+
+新增：models.User.objects.create(name=name)
+     或者：
+     m = models.User(name="a",password='123456')
+     m.save()
+     
+删除：models.User.objects.filter(name='a').delete()
+
+
+修改：models.User.objects.filter(user='a').update(password='1314')
+     或者：
+     mo = models.User.objects.get(user='a')
+     mo.password=("1314")
+     mo.save()
+              
+查询：models.User.objects.all()
+     models.User.objects.all().values('name')    #只取name列
+     models.User.objects.all().values_list('name','password')    #取出name和password列，并生成一个列表   
+     models.User.objects.filter(name=name)
+     获取的为一个object 对像需要遍历提取里面的数据。
