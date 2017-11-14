@@ -14,6 +14,12 @@ linux 后台启动：cd projectname  nohub python manage.py runserver ip:port &
             
 清空数据库：python manage.py flush
 
+导入mysql中已存在的表：
+* python manage.py inspectdb
+* python manage.py inspectdb tablename > \appname\models.py
+
+
+
 对数据库表的增删改查：
 
 models.py文件中为User表
