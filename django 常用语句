@@ -11,6 +11,8 @@ linux 后台启动：cd projectname  nohub python manage.py runserver ip:port &
             * from django.db import connection
             * cursor=connection.cursor()
             * cursor.execute('ALTER TABLE table_name add port Integer default 0')
+            
+清空数据库：python manage.py flush
 
 对数据库表的增删改查：
 
