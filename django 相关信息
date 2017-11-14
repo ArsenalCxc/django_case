@@ -107,4 +107,20 @@ urlpatterns = [
     url(r'^XdrUser/$', view.XdrUser),
 ]
 
+-*- setting.py文件末尾处指定CSS、js等界面文件时可如下添加路由
+
+STATIC_URL = '/static/'
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
+
+-*- views.py 
+在django 1.11版本存在csrf防御机制,解决办法建议使用
+
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
+def youfunction():
+    return HttpResponse()
+    
 
