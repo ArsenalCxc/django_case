@@ -1,7 +1,7 @@
 创建项目 django-admin.py startproject projectname
 创建应用 cd projectname  django-admin.py startapp appname
 启动服务 cd projectname python manage.py runserver ip:port
-linux 后台启动：cd projectname  nohub python manage.py runserver ip:port &
+linux 后台启动：cd projectname  nohup python manage.py runserver ip:port &
 
 
 数据库表创建、更新：python manage.py makemigrations
