@@ -1,0 +1,276 @@
+*** 环境：linux 
+uwsgi 安装直接可使用  pip install uwsgi；
+
+nginx 安装可使用 yum install nginx;
+
+django 版本1.11*
+具体安装百度一下
+
+文件目录：
+1.django 项目目录: /home/Test
+
+2.nginx.conf 文件目录 /etc/nginx/
+
+首先实现 uwsgi 调用django 项目：
+在django 项目下生成 Test_uwsgi.ini 文件 目录级别和 manage.py 同级；
+
+文件配置如下：
+# Test_uwsgi.ini file
+[uwsgi]
+
+# Django-related settings
+
+socket = 192.168.1.116:3014   #nginx实现django下  socket 不可替换  [IP:port]
+
+# the base directory (full path)
+chdir           = /home/Test  #项目目录
+
+# Django s wsgi file
+module          = Test.wsgi   #等同于指定 /home/Test/Test/wsgi.py 文件
+
+# process-related settings
+# master
+master          = true
+
+# maximum number of worker processes
+processes       = 4
+
+# ... with appropriate permissions - may be needed
+# chmod-socket    = 664
+# clear environment on exit
+vacuum          = true
+
+配置完成启用当前配置文件：
+cd /home/Test/
+uwsgi --ini Test_uwsgi.ini    --ini 指定读取的文件格式 
+
+此时访问 192.168.1.116:3014 可返回 it work成功页面
+
+nginx.conf文件配置：
+/etc/nginx/ 下存在的文件：
+drwxr-xr-x. 2 root root 4096 Dec 17 17:41 conf.d
+-rw-r--r--. 1 root root 1007 Oct 17 21:25 fastcgi_params
+-rw-r--r--. 1 root root 2837 Oct 17 21:25 koi-utf
+-rw-r--r--. 1 root root 2223 Oct 17 21:25 koi-win
+-rw-r--r--. 1 root root 3957 Oct 17 21:25 mime.types
+lrwxrwxrwx. 1 root root   29 Oct 27 16:17 modules -> ../../usr/lib64/nginx/modules
+-rw-r--r--. 1 root root  642 Nov  5 12:15 nginx.conf
+-rw-r--r--. 1 root root  636 Oct 17 21:25 scgi_params
+-rw-r--r--. 1 root root  664 Oct 17 21:25 uwsgi_params
+-rw-r--r--. 1 root root 3610 Oct 17 21:25 win-utf
+
+conf.d 文件夹：存放各个django 项目下nginx.conf 中的 server{}  配置
+[root@NV-M-GZ-120-198-245-44 conf.d]# ll
+total 4
+-rw-r--r--. 1 root root 762 Oct 27 16:26 InternetPlatform.conf
+
+配置内容:
+
+server {
+  listen 30;
+  server_name localhost;
+  access_log /home/Test/logs/access.log;
+  error_log /home/Test/logs/error.log;
+  location = /guangdongcmcc/{
+        root /home/Test/www/;
+  }
+  location / {
+    include /etc/nginx/uwsgi_params;  
+    uwsgi_pass 127.0.0.1:9090;
+  }
+  location ~ \.(js|html|css|gif|jpg|png|ico|json|ttf|gzip__|woff2)$ {
+        root /home/Test/www/;
+  }
+  error_page 500 502 503 504 /50x.html;  
+  location = /50x.html {
+     root /usr/share/nginx/html;
+  }
+  location /static/ {
+    alias /home/Test/static/;
+  }
+  location /media/ {  
+    alias /home/Test//media/;
+  }
+}
+
+nginx.conf 配置：
+
+user  nginx;
+worker_processes  1;
+
+error_log  /var/log/nginx/error.log warn;
+pid        /var/run/nginx.pid;
+
+
+events {
+    worker_connections  1024;
+}
+
+
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log  /var/log/nginx/access.log  main;
+
+    sendfile        on;
+    #tcp_nopush     on;
+
+    keepalive_timeout  65;
+
+    gzip  on;
+
+    include /etc/nginx/conf.d/*.conf;
+}
+
+*** nginx.conf 配置2：
+#user nobody;
+worker_processes 1;
+ 
+#error_log logs/error.log;
+#error_log logs/error.log notice;
+#error_log logs/error.log info;
+ 
+#pid logs/nginx.pid;
+ 
+ 
+events {
+  worker_connections 1024;
+}
+ 
+ 
+http {
+  include mime.types;
+  default_type application/octet-stream;
+ 
+  #log_format main '$remote_addr - $remote_user [$time_local] "$request" '
+  # '$status $body_bytes_sent "$http_referer" '
+  # '"$http_user_agent" "$http_x_forwarded_for"';
+ 
+  #access_log logs/access.log main;
+ 
+  sendfile on;
+  #tcp_nopush on;
+ 
+  #keepalive_timeout 0;
+  keepalive_timeout 65;
+ 
+  #gzip on;
+ 
+  #服务器的集群  
+  #upstream  mySite.com { #服务器集群名字   
+  #server 192.168.1.101:8080 weight=1;#服务器配置 weight是权重的意思，权重越大，分配的概率越大。  
+  #server 192.168.1.102:8080 weight=1;  
+  #}
+  #include /etc/nginx/conf.d/*.conf; 
+  server {
+  listen 30;
+  server_name IP;
+ 
+  #charset koi8-r;
+ 
+  #access_log logs/host.access.log main;
+  charset UTF-8;
+  access_log      /var/log/nginx/Test_access.log;
+  error_log       /var/log/nginx/Test_error.log;
+
+  client_max_body_size 75M;
+
+  location / {
+  #proxy_pass http://mySite.com;  
+  #proxy_redirect default;
+  include uwsgi_params.default;
+  uwsgi_pass ip:port;    #地址和端口必须同uwsgi 一致
+  uwsgi_read_timeout 2;
+  }
+
+  location /static {
+  expires 30d;
+  autoindex on; 
+  add_header Cache-Control private;
+  alias /home/Test/static/;
+  }
+
+  location /static/admin/css/{ 
+  root /usr/local/python270/lib/python2.7/site-packages/django/contrib/admin/;
+  }  
+  #error_page 404 /404.html;
+ 
+  # redirect server error pages to the static page /50x.html
+  #
+  error_page 500 502 503 504 /50x.html;
+  location = /50x.html {
+  root html;
+  }
+ 
+  # proxy the PHP scripts to Apache listening on 127.0.0.1:80
+  #
+  #location ~ \.php$ {
+  # proxy_pass http://127.0.0.1;
+  #}
+ 
+  # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+  #
+  #location ~ \.php$ {
+  # root html;
+  # fastcgi_pass 127.0.0.1:9000;
+  # fastcgi_index index.php;
+  # fastcgi_param SCRIPT_FILENAME /scripts$fastcgi_script_name;
+  # include fastcgi_params;
+  #}
+ 
+  # deny access to .htaccess files, if Apache's document root
+  # concurs with nginx's one
+  #
+  #location ~ /\.ht {
+  # deny all;
+  #}
+  }
+ 
+ 
+  # another virtual host using mix of IP-, name-, and port-based configuration
+  #
+  #server {
+  # listen 8000;
+  # listen somename:8080;
+  # server_name somename alias another.alias;
+ 
+  # location / {
+  # root html;
+  # index index.html index.htm;
+  # }
+  #}
+ 
+ 
+  # HTTPS server
+  #
+  #server {
+  # listen 443 ssl;
+  # server_name localhost;
+ 
+  # ssl_certificate cert.pem;
+  # ssl_certificate_key cert.key;
+ 
+  # ssl_session_cache shared:SSL:1m;
+  # ssl_session_timeout 5m;
+ 
+  # ssl_ciphers HIGH:!aNULL:!MD5;
+  # ssl_prefer_server_ciphers on;
+ 
+  # location / {
+  # root html;
+  # index index.html index.htm;
+  # }
+  #}
+ 
+}
+重启nginx
+/etc/init.d/nginx restart
+一般修改后选择重载
+/etc/init.d/nginx reload
+
+访问 ip:listen/admin/
