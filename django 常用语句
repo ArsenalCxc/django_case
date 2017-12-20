@@ -43,3 +43,4 @@ models.py文件中为User表
      models.User.objects.all().values_list('name','password')    #取出name和password列，并生成一个列表   
      models.User.objects.filter(name=name)
      获取的为一个object 对像需要遍历提取里面的数据。
+     models.User.objects.filter(name__contains=name) #模糊查询
