@@ -44,6 +44,8 @@ vacuum          = true
 cd /home/Test/
 uwsgi --ini Test_uwsgi.ini    --ini 指定读取的文件格式 
 
+/usr/local/python35/bin/uwsgi --http :8000 --module Test.wsgi
+
 此时访问 192.168.1.116:3014 可返回 it work成功页面
 
 nginx.conf文件配置：
